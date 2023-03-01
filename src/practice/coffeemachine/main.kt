@@ -1,14 +1,11 @@
 package practice.coffeemachine
 
 
-class Stage1{
-    init {
-        println("Starting to make a coffee in NIX office\nGrinding coffee beans\nBoiling water\n" +
-                "Mixing boiled water with crushed coffee beans\nPouring coffee into the cup\n" +
-                "Pouring some milk into the cup\nCoffee is ready! Go to work!")
-    }
-}
-
 fun main() {
-    Stage1()
+    println("Write how many cups of coffee you will need:")
+    val cups = Integer.valueOf(readLine())
+    println("For $cups cups of coffee you will need:\n" +
+            "${cups * 200} ml of water\n" +
+            "${cups * 50} ml of milk\n" +
+            "${cups * 15} g of coffee beans")
 }
