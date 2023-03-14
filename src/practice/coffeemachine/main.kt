@@ -1,22 +1,92 @@
 package practice.coffeemachine
 
 
-fun main() {
-    println("Write how many ml of water the coffee machine has:")
-    var cupsCan = Integer.valueOf(readLine()) / 200
-    println("Write how many ml of milk the coffee machine has:")
-    cupsCan = find_min(cupsCan, Integer.valueOf(readLine()) / 50)
-    println("Write how many grams of coffee beans the coffee machine has:")
-    cupsCan = find_min(cupsCan, Integer.valueOf(readLine()) / 15)
-    println("Write how many cups of coffee you will need:")
-    val cupsNeed = Integer.valueOf(readLine())
+val coffeeMachine = CoffeeMachine()
 
-    if (cupsNeed == cupsCan) { println("Yes, I can make that amount of coffee")}
-    else if (cupsNeed > cupsCan) { println("No, I can make only $cupsCan cups of coffee")}
-    else { println("Yes, I can make that amount of coffee (and even ${cupsCan - 1} more than that")}
+fun main() {
+    println(coffeeMachine.showIngredients())
+
+    println("Write action (buy, fill, take):")
+    when(readLine()) {
+        "buy" -> {
+            println("\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:")
+            val coffee = Integer.valueOf(readLine())
+
+            when (coffee) {
+                1 -> coffeeMachine.checkIngredients(250, 0, 16, 5)
+                2 -> coffeeMachine.checkIngredients(350, 75, 20, 7)
+                3 -> coffeeMachine.checkIngredients(200, 100, 12, 6)
+            }
+        }
+
+        "fill" -> {
+            println("Write how many ml of water you want to add:")
+            val water = Integer.valueOf(readLine())
+            println("Write how many ml of milk you want to add:")
+            val milk = Integer.valueOf(readLine())
+            println("Write how many grams of coffee beans you want to add:")
+            val coffeeBeans = Integer.valueOf(readLine())
+            println("Write how many disposable coffee cups you want to add:")
+            val cups = Integer.valueOf(readLine())
+            coffeeMachine.fill(water, milk, coffeeBeans, cups)
+        }
+        "take" -> coffeeMachine.take()
+                else -> println("-__-")
+    }
 }
 
 
-fun find_min(a: Int, b: Int): Int {
-    return if (a > b) { b } else { a }
+class CoffeeMachine(private var water: Int = 400,
+                    private var milk: Int = 540,
+                    private var coffeeBeans: Int = 120,
+                    private var cups: Int = 9,
+                    private var money: Int = 550){
+
+
+    fun showIngredients() =
+    """The coffee machine has:
+    $water of water
+    $milk of milk
+    $coffeeBeans of coffee beans
+    $cups of disposable cups
+    $money of money 
+    """
+
+
+    fun checkIngredients(waterNeed: Int, milkNeed: Int, coffeeBeansNeed: Int, moneyCost: Int) {
+            if (water >= waterNeed && milk >= milkNeed && coffeeBeans >= coffeeBeansNeed && cups >= 1) {
+                buy(waterNeed, milkNeed, coffeeBeansNeed, moneyCost)
+            }
+            else {
+                println("Not enough ingredients")
+                return main()
+        }
+
+    }
+
+
+    fun buy(waterNeed: Int, milkNeed: Int, coffeeBeansNeed: Int, moneyCost: Int) {
+        water -= waterNeed
+        milk -= milkNeed
+        coffeeBeans -= coffeeBeansNeed
+        cups -= 1
+        money += moneyCost
+        return main()
+    }
+
+
+    fun fill(waterAdd: Int, milkAdd: Int, coffeeBeansAdd: Int, cupsAdd: Int) {
+        water += waterAdd
+        milk += milkAdd
+        coffeeBeans += coffeeBeansAdd
+        cups += cupsAdd
+        return main()
+    }
+
+
+    fun take() {
+        println("I gave you $money")
+        money -= money
+        return main()
+    }
 }
