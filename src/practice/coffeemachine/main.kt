@@ -4,18 +4,19 @@ package practice.coffeemachine
 val coffeeMachine = CoffeeMachine()
 
 fun main() {
-    println(coffeeMachine.showIngredients())
-
-    println("Write action (buy, fill, take):")
+    println("\nWrite action (buy, fill, take, remaining, exit):")
     when(readLine()) {
+        "remaining" -> coffeeMachine.remaining()
+
         "buy" -> {
-            println("\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:")
-            val coffee = Integer.valueOf(readLine())
+            println("\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back – to main menu::")
+            val coffee = readLine()
 
             when (coffee) {
-                1 -> coffeeMachine.checkIngredients(250, 0, 16, 5)
-                2 -> coffeeMachine.checkIngredients(350, 75, 20, 7)
-                3 -> coffeeMachine.checkIngredients(200, 100, 12, 6)
+                "1" -> coffeeMachine.checkIngredients(250, 0, 16, 5)
+                "2" -> coffeeMachine.checkIngredients(350, 75, 20, 7)
+                "3" -> coffeeMachine.checkIngredients(200, 100, 12, 6)
+                else -> main()
             }
         }
 
@@ -31,7 +32,8 @@ fun main() {
             coffeeMachine.fill(water, milk, coffeeBeans, cups)
         }
         "take" -> coffeeMachine.take()
-                else -> println("-__-")
+
+        else -> println("-__-")
     }
 }
 
@@ -43,26 +45,34 @@ class CoffeeMachine(private var water: Int = 400,
                     private var money: Int = 550){
 
 
-    fun showIngredients() =
-    """The coffee machine has:
+    fun remaining() {
+        println("""The coffee machine has:
     $water of water
     $milk of milk
     $coffeeBeans of coffee beans
     $cups of disposable cups
     $money of money 
-    """
+    """)
+        return main()
+    }
 
 
     fun checkIngredients(waterNeed: Int, milkNeed: Int, coffeeBeansNeed: Int, moneyCost: Int) {
             if (water >= waterNeed && milk >= milkNeed && coffeeBeans >= coffeeBeansNeed && cups >= 1) {
+                println("I have enough resources, making you a coffee!")
                 buy(waterNeed, milkNeed, coffeeBeansNeed, moneyCost)
             }
             else {
-                println("Not enough ingredients")
+                if (water - waterNeed < 0) {NotEnoughIngredients("water")}
+                if (milk - milkNeed < 0) {NotEnoughIngredients("milk")}
+                if (coffeeBeans - coffeeBeansNeed < 0) {NotEnoughIngredients("coffee Beans")}
+                if (cups - 1 < 0) {NotEnoughIngredients("cups")}
                 return main()
         }
-
     }
+
+
+    fun NotEnoughIngredients(ingredient: String) = println("Sorry, not enough $ingredient!")
 
 
     fun buy(waterNeed: Int, milkNeed: Int, coffeeBeansNeed: Int, moneyCost: Int) {
